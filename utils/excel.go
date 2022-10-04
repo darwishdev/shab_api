@@ -36,30 +36,19 @@ func GenerateExcel(data []interface{}) string {
 	return fileName
 }
 
-func ReadExcel(file string) ([]interface{}, error) {
-	var resp []interface{}
-	f, err := excelize.OpenFile("Book1.xlsx")
+func ReadExcel(file string) ([][]string, error) {
+	var resp [][]string
+	f, err := excelize.OpenFile(file)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	defer func() {
-		// Close the spreadsheet.
-		// if err := f.Close(); err != nil {
-		// 	fmt.Println(err)
-		// }
-	}()
-	// Get value from cell by given worksheet name and cell reference.
-	cell := f.GetCellValue("Sheet1", "B2")
-
-	fmt.Println(cell)
-	// Get all the rows in the Sheet1.
-	rows := f.GetRows("Sheet1")
-	for _, row := range rows {
-		for _, colCell := range row {
-			fmt.Print(colCell, "\t")
-		}
-		fmt.Println()
+	// Get all the rows in the Sheet  except first rows [columns names].
+	rows := f.GetRows("Sheet")
+	for i := 0; i < len(rows)-1; i++ {
+		resp = append(resp, rows[i+1])
 	}
+	fmt.Println("rows[i+1][4]")
+	fmt.Println(resp)
 	return resp, nil
 }

@@ -1,4 +1,4 @@
-USE alshab_staging2;
+USE alshab_staging;
 
 # categories
 INSERT INTO
@@ -78,12 +78,12 @@ VALUES
         'event'
     ),
     (
-        'التنمية البشرية‬',
+        'التنمية البشري',
         'human-greeting-variant',
         'video'
     ),
     (
-        '‫المالية‬',
+        'المالية',
         'human-greeting-variant',
         'video'
     ),
@@ -93,12 +93,12 @@ VALUES
         'video'
     ),
     (
-        '‫التقنية‪،‬‬',
+        'التقنية',
         'human-greeting-variant',
         'video'
     ),
     (
-        '‫التسويق‬',
+        'التسويق',
         'human-greeting-variant',
         'video'
     ),

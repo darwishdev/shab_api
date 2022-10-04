@@ -78,12 +78,62 @@ func (h *Handler) ConsultuntsDownloadExcel(c echo.Context) error {
 	}
 
 	fileName := utils.GenerateExcel(consultunts)
-	fmt.Println(fileName)
-
 	return c.JSON(http.StatusOK, fileName)
 
 	// return c.JSON(http.StatusOK, users)
 }
+
+func (h *Handler) ConsultuntsUploadExcel(c echo.Context) error {
+	data, err := utils.ReadExcel(c.QueryParam("file"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+
+	for _, v := range data {
+		req := new(model.Consultunt)
+		req.NameAr = v[0]
+		req.Title = v[1]
+		req.Skills = v[2]
+		req.Image = v[3]
+		req.Breif = v[4]
+
+		_, err := h.consltuntsRepo.ConsultuntsCreate(req)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+		}
+	}
+
+	return c.JSON(http.StatusOK, data)
+
+	// return c.JSON(http.StatusOK, users)
+}
+
+func (h *Handler) TeamUploadExcel(c echo.Context) error {
+	data, err := utils.ReadExcel(c.QueryParam("file"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
+
+	for _, v := range data {
+		req := new(model.Consultunt)
+		req.NameAr = v[0]
+		req.Title = v[1]
+		req.Skills = v[2]
+		req.Image = v[3]
+		req.Breif = v[4]
+		req.IsTeam = true
+
+		_, err := h.consltuntsRepo.ConsultuntsCreate(req)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+		}
+	}
+
+	return c.JSON(http.StatusOK, data)
+
+	// return c.JSON(http.StatusOK, users)
+}
+
 func (h *Handler) ConsultuntsUpdate(c echo.Context) error {
 	fmt.Println("hellow wo")
 	req := new(model.Consultunt)

@@ -31,6 +31,7 @@ type UserPendingUpgrades struct {
 	PriceToPay    float64
 	CreatedAt     string
 }
+
 type UserRegisterRequest struct {
 	Name     string
 	Name_ar  string
@@ -39,8 +40,8 @@ type UserRegisterRequest struct {
 	Serial   string
 	Password string
 	Phone    string
-	Role_id  uint
-	City_id  uint
+	Role_id  uint64
+	City_id  uint64
 	Breif    string
 	Admin    bool
 }
@@ -77,8 +78,8 @@ type User struct {
 	Img      string
 	Serial   string
 	Points   uint
-	Role_id  uint
-	City_id  uint
+	Role_id  uint64
+	City_id  uint64
 	Phone    string
 	Breif    string
 	Role     string

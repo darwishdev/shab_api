@@ -53,6 +53,10 @@ func (h *Handler) Register(v1 *echo.Group) {
 	users.POST("/service/:id", h.UserRequestService, jwtMiddleware)
 	users.POST("/upgrade/:role", h.UserUpgrade, jwtMiddleware)
 
+	// upload users requests from excel
+	api.POST("/users-pending/upload", h.UsersPendingUploadExcel)
+	// upload articles requests from excel
+	api.POST("/articles-pending/upload", h.ArticlesPendingUploadExcel)
 	// requests routes
 
 	requests := api.Group("/requests")
@@ -60,6 +64,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	requests.PUT("/services/:action/:id", h.ServicesPendingAction)
 	requests.GET("/services/:id", h.ServicesPendingFind)
 	requests.GET("/users", h.UsersPendingListAll)
+
 	requests.GET("/users/upgrades", h.UsersPendingUpgradeListAll)
 	requests.PUT("/users/:action/:id", h.UsersPendingAction)
 	requests.PUT("/upgrades/:id", h.UsersUpgradeApprove)
@@ -148,6 +153,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	rich.GET("/key", h.RichGetByKey)
 
 	team := api.Group("/team")
+	team.POST("/upload", h.TeamUploadExcel)
 	team.GET("", h.TeamList)
 	team.POST("/excel", h.TeamDownloadExcel)
 	//consultunts routes
@@ -155,6 +161,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 
 	consultunts.GET("", h.ConsultuntsListAll)
 	consultunts.POST("/excel", h.ConsultuntsDownloadExcel)
+	consultunts.POST("/upload", h.ConsultuntsUploadExcel)
 
 	consultunts.POST("/editadd", h.ConsultuntsCreate)
 	consultunts.PUT("/editadd/:id", h.ConsultuntsUpdate)
