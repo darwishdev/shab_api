@@ -256,9 +256,13 @@ func (h *Handler) UsersPendingAction(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
 	}
+	user, err := strconv.ParseUint(c.Param("user"), 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
+	}
 	action := c.Param("action")
 
-	r, err := h.requestRepo.PendingUserAction(&id, &action)
+	r, err := h.requestRepo.PendingUserAction(&id, &action, &user)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, utils.NewError(err))
 	}

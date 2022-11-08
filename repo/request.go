@@ -111,6 +111,7 @@ func (ur *RequestRepo) ListPendingUsers(req *model.PendingUsersListReq) (*[]inte
 		var u model.UserPending
 		rows.Scan(
 			&u.Id,
+			&u.UserId,
 			&u.NameAr,
 			&u.Email,
 			&u.Type,
@@ -146,6 +147,7 @@ func (ur *RequestRepo) ListPendingUpgrades(req *model.UsersUpgratedListReq) (*[]
 		var rec model.UserPendingUpgrades
 		rows.Scan(
 			&rec.Id,
+			&rec.UserId,
 			&rec.NameAr,
 			&rec.Email,
 			&rec.Phone,
@@ -274,9 +276,9 @@ func (ur *RequestRepo) ApprovePendingService(id *int, action *string) (*int, err
 	return &resp, nil
 }
 
-func (ur *RequestRepo) PendingUserAction(id *uint64, action *string) (*int, error) {
+func (ur *RequestRepo) PendingUserAction(id *uint64, action *string, user_id *uint64) (*int, error) {
 	var resp int
-	err := ur.db.Raw("CALL UserPendingAction(? , ?);", id, action).Row().Scan(&resp)
+	err := ur.db.Raw("CALL UserPendingAction(? , ? , ? );", id, action, user_id).Row().Scan(&resp)
 	if err != nil {
 		utils.NewError(err)
 		return nil, err

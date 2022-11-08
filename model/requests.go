@@ -2,6 +2,7 @@ package model
 
 type UserPending struct {
 	Id        int
+	UserId    int
 	NameAr    string
 	Email     string
 	Type      string

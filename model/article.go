@@ -24,6 +24,7 @@ type ArticlesListReq struct {
 	DateTo   string `query:"DateTo"`
 	Search   string `query:"Name"`
 }
+
 type ArticleList struct {
 	Id           uint
 	CategoryName string

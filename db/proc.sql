@@ -103,7 +103,8 @@ CREATE PROCEDURE UserListByRoleOrFeatured(
     IN Iname VARCHAR(100),
     IN Iphone VARCHAR(100),
     IN Iemail VARCHAR(100),
-    IN Iserial VARCHAR(100)
+    IN Iserial VARCHAR(100),
+    IN Deleted BOOLEAN
  ) 
 BEGIN
 
@@ -119,9 +120,14 @@ SELECT
         u.phone,
         IFNULL(u.breif,""),
         r.name role,
-        r.color
+        r.color,
+        s.start_at,
+        s.end_at,
+        s.end_at < CURRENT_DATE() AS expired 
+        
         FROM users u
             JOIN roles r ON u.role_id = r.id
+            JOIN user_subs s ON u.id = s.user_id
             WHERE u.active = 1 
             AND u.admin = admin
             AND  (CASE WHEN role = 0 THEN '1' ELSE u.role_id = role END)
@@ -129,10 +135,11 @@ SELECT
             AND  (CASE WHEN Iname = '' THEN '1' ELSE u.name_ar LIKE CONCAT('%' ,  Iname , '%') END)
             AND  (CASE WHEN Iphone = '' THEN '1' ELSE u.phone LIKE CONCAT('%' ,  Iphone , '%') END)
             AND  (CASE WHEN Iemail = '' THEN '1' ELSE u.email LIKE CONCAT('%' ,  Iemail , '%') END)
-            AND  (CASE WHEN Iserial = '' THEN '1' ELSE u.serial LIKE CONCAT('%' ,  Iserial , '%') END);
+            AND  (CASE WHEN Iserial = '' THEN '1' ELSE u.serial LIKE CONCAT('%' ,  Iserial , '%') END)
+            AND  (CASE WHEN Deleted THEN u.deleted_at IS NOT NULL ELSE u.deleted_at IS NULL END)
+        ORDER BY u.id ;
     END//
 DELIMITER ;
-
 
 
 
@@ -840,6 +847,7 @@ BEGIN
         role_id,
         `serial`,
         admin,
+        points,
         active
    )
    VALUES (
@@ -851,6 +859,7 @@ BEGIN
         IRole,
         @maxSerial + 1,
         IAdmin,
+        (SELECT price FROM roles WHERE id = IRole),
         IAdmin
    );
 
@@ -925,7 +934,7 @@ CREATE PROCEDURE UsersPendingUpgrades(
     
     ) BEGIN
     SELECT u.id , u.name_ar , u.email , u.phone , cur_role.name  , u.role_id   , new_role.name , us.role_id , us.price , 
-    u.status , us.created_at 
+   IF(us.approved_at IS NULL , 'Approved' , 'Pending') AS `Status` , us.created_at 
     FROM users u 
     JOIN user_subs us 
         ON u.id = us.user_id 
@@ -1820,13 +1829,7 @@ DROP PROCEDURE IF EXISTS MsgsList;
 DELIMITER //
 CREATE  PROCEDURE `MsgsList`(IN Iuser_id INT)
 BEGIN
-    SELECT fr.id from_id , t.id to_id  INTO @toId , @fromId FROM msgs m JOIN users fr ON m.from_id = fr.id JOIN users t ON m.to_id = t.id WHERE to_id = Iuser_id OR from_id = Iuser_id GROUP BY fr.name , fr.id , t.name , t.id; 
-    IF @toId = Iuser_id THEN
-        SELECT id , name_ar , img FROM users WHERE id = @fromId ;
-    ELSE
-        SELECT id , name_ar , img FROM users WHERE id = @toId ;
-    END IF;
-
+    SELECT DISTINCT u.id , u.name_ar , u.img FROM users u JOIN msgs m ON u.id = m.to_id OR u.id = m.from_id WHERE u.id != Iuser_id AND ( m.from_id = Iuser_id OR m.to_id = Iuser_id); 
     SELECT id , name_ar , img FROM users WHERE id != Iuser_id;
 END//
 DELIMITER ;

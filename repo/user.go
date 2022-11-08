@@ -192,6 +192,9 @@ func scanUserResult(rows *sql.Rows) ([]interface{}, error) {
 			&rec.Breif,
 			&rec.Role,
 			&rec.Color,
+			&rec.StartAt,
+			&rec.EndAt,
+			&rec.Expired,
 		)
 		// rec.Img = config.Config("BASE_URL") + rec.Img
 
@@ -217,7 +220,7 @@ func (ur *UserRepo) ListAll() ([]interface{}, error) {
 	return result, nil
 }
 func (ur *UserRepo) ListByRoleOrFeatured(req *model.UserListReq) ([]interface{}, error) {
-	rows, err := ur.db.Raw("CALL UserListByRoleOrFeatured(? , ? , ? ,  ? , ? , ? , ?);",
+	rows, err := ur.db.Raw("CALL UserListByRoleOrFeatured(? , ? , ? ,? ,  ? , ? , ? , ?);",
 		req.Role,
 		req.Featured,
 		req.Admin,
@@ -225,6 +228,7 @@ func (ur *UserRepo) ListByRoleOrFeatured(req *model.UserListReq) ([]interface{},
 		req.Phone,
 		req.Email,
 		req.Serial,
+		req.Deleted,
 	).Rows()
 	if err != nil {
 		utils.NewError(err)

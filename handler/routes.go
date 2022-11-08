@@ -66,7 +66,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	requests.GET("/users", h.UsersPendingListAll)
 
 	requests.GET("/users/upgrades", h.UsersPendingUpgradeListAll)
-	requests.PUT("/users/:action/:id", h.UsersPendingAction)
+	requests.PUT("/users/:action/:id/:user", h.UsersPendingAction)
 	requests.PUT("/upgrades/:id", h.UsersUpgradeApprove)
 	requests.GET("/projects", h.ProjectsPendingListAll)
 	requests.PUT("/projects/:action/:id", h.ProjectsPendingAction)

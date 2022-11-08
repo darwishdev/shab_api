@@ -20,6 +20,7 @@ type UserServiceRequest struct {
 }
 type UserPendingUpgrades struct {
 	Id            int
+	UserId        int
 	NameAr        string
 	Email         string
 	Phone         string
@@ -67,6 +68,7 @@ type UserListReq struct {
 	Phone    string `query:"Phone"`
 	Email    string `query:"Email"`
 	Serial   string `query:"Serial"`
+	Deleted  bool   `query:"Deleted"`
 }
 
 type User struct {
@@ -85,6 +87,9 @@ type User struct {
 	Role     string
 	Color    string
 	Password string
+	StartAt  string
+	EndAt    string
+	Expired  bool
 }
 
 func UserToRegisterReq(user *User) *UserRegisterRequest {
