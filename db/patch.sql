@@ -14,7 +14,7 @@ SELECT
 FROM users u 
     JOIN roles r ON u.role_id = r.id 
     LEFT JOIN user_subs s ON u.id = s.user_id
-WHERE s.id IS NULL
+WHERE s.id IS NULL;
 
 
 
@@ -69,41 +69,6 @@ SELECT
 DELIMITER ;
 
 
-
-
-
-DROP PROCEDURE IF EXISTS UsersPendingUpgrades;
-DELIMITER // 
-CREATE PROCEDURE UsersPendingUpgrades(
-    Istatus VARCHAR(100),
-    Iname_ar VARCHAR(200),
-    Iemail VARCHAR(200),
-    Iphone VARCHAR(200),
-    Irole VARCHAR(200),
-    InewRole VARCHAR(200),
-    dateFrom VARCHAR(200),
-    dateTo VARCHAR(200)
-    
-    ) BEGIN
-    SELECT u.id , u.name_ar , u.email , u.phone , cur_role.name  , u.role_id   , new_role.name , us.role_id , us.price , 
-   IF(us.approved_at IS NULL , 'Approved' , 'Pending') AS `Status` , us.created_at 
-    FROM users u 
-    JOIN user_subs us 
-        ON u.id = us.user_id 
-    JOIN roles cur_role 
-        ON u.role_id = cur_role.id 
-    JOIN roles new_role ON us.role_id = new_role.id WHERE 
-    (CASE WHEN Istatus = '' THEN '1' ELSE u.status = Istatus END)
-    AND (CASE WHEN Iname_ar = '' THEN 1 = 1 ELSE  u.name_ar LIKE CONCAT('%' , Iname_ar , '%') END)
-    AND (CASE WHEN Iemail = '' THEN 1 = 1 ELSE  u.email LIKE CONCAT('%' , Iemail , '%') END)
-    AND (CASE WHEN Iphone = '' THEN 1 = 1 ELSE  u.phone LIKE CONCAT('%' , Iphone , '%') END)
-    AND (CASE WHEN Irole = 0 THEN 1 = 1 ELSE  cur_role.id = Irole END)
-    AND (CASE WHEN InewRole = 0 THEN 1 = 1 ELSE  new_role.id = InewRole END)
-    AND (CASE WHEN dateFrom = '' THEN '1' ELSE us.created_at >= dateFrom END)
-    AND (CASE WHEN dateTo = '' THEN '1' ELSE us.created_at <= dateTo END)
-    AND new_role.id != cur_role.id;
-END //
-DELIMITER ;
 
 
 
@@ -245,3 +210,4 @@ BEGIN
         (SELECT price FROM roles WHERE id = IRole),
         IAdmin
    );
+END
