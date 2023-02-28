@@ -1741,7 +1741,7 @@ DELIMITER //
 CREATE  PROCEDURE `ServiceRequestsPending`(Iname_ar VARCHAR(200),Istatus VARCHAR(200), service_id INT  ,role_id INT ,Iemail VARCHAR(100),Ibreif VARCHAR(100))
 BEGIN
 
-    SELECT us.id, u.id ,u.name_ar ,s.name , r.name  ,  u.email , us.breif , us.status , us.created_at FROM 
+    SELECT us.id, u.id ,u.name_ar ,s.name , r.name  ,  u.email , SUBSTRING(us.breif , 1, 20)  , us.status , us.created_at FROM 
     user_services us 
     JOIN users u 
         ON us.user_id = u.id
